@@ -26,6 +26,10 @@ namespace OOAPdekor
 		bool catle_issoe=false;
 		Random rnd = new Random();
 		int rnd_x, rnd_y;
+		int en = -1;
+		int kn = 2;
+		string en_caption;
+		string kn_caption;
 		public void Redraw_field()
 		{
 			for (int i = 0; i < 8; i++)
@@ -34,6 +38,11 @@ namespace OOAPdekor
 				{
 					if (myfield[i, j] < 0)
 					{
+						if (myfield[i, j]==en)
+						{
+							map_btn[i, j].Text = en_caption;
+						}
+
 						map_btn[i, j].BackColor = Color.Red;
 						//map_btn[i, j].Text = 
 						
@@ -53,6 +62,10 @@ namespace OOAPdekor
 					}
 					else if (myfield[i, j] > 1)
 					{
+						if (myfield[i, j] == kn)
+						{
+							map_btn[i, j].Text = kn_caption;
+						}
 						map_btn[i, j].BackColor = Color.Green;
 						map_btn[i, j].Enabled = false;
 					}
@@ -110,8 +123,14 @@ namespace OOAPdekor
 					game.CreateEnemy(rnd_x, rnd_y);
 					Redraw_field();
 				}
+				 en_caption =game.EnAttack();
+				kn_caption =game.KnAttack();
+				Redraw_field();
+				kn++;
+				en--;
 				turn = true;
 			}
+
 		}
 
 		private void start_Click(object sender, EventArgs e)
