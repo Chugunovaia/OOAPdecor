@@ -19,7 +19,7 @@ namespace OOAPdekor
 			Application.Run(new Form1());
 		}
 	}
-	public class Battlefield
+	public class Battlefield ///////!!!!!!!!!!!!!!!!!!!
 	{
 		public static int[,] field = new int[8, 8];
 		public Battlefield()
@@ -35,6 +35,17 @@ namespace OOAPdekor
 		public int[,] get_field()
 		{
 			return field;
+		}
+		public bool IsFull()
+		{
+			for (int i = 0; i < 8; i++)
+			{
+				for (int j = 0; j < 8; j++)
+				{
+					if (field[i, j] == 0)
+						return false;
+				}
+			} return true;
 		}
 
 	}
@@ -118,11 +129,11 @@ namespace OOAPdekor
 		SortedDictionary<int, Enemy> enemy = new SortedDictionary<int, Enemy>();
 		private int e = -1;
 		//GameObj obj;
-		public int[,] NewMap()
+		public Battlefield NewMap() /////!!!!!!!!!!!!!!!!1
 		{
 			field = new Battlefield();
 			myfield = field.get_field();
-			return myfield;
+			return field;
 
 		}
 		public void CreateCastle(int x, int y)

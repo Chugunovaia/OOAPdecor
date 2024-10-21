@@ -15,12 +15,15 @@ namespace OOAPdekor
 	public partial class Form1 : Form
 	{
 		Game game = new Game();
+		Battlefield field;
 		int[,] myfield;
 		int x_ind, y_ind;
 		string name;
 		Button[,] map_btn;
 		bool turn = false;
-
+		bool catle_issoe=false;
+		Random rnd = new Random();
+		int rnd_x, rnd_y;
 		public void Redraw_field()
 		{
 			for (int i = 0; i < 8; i++)
@@ -63,6 +66,7 @@ namespace OOAPdekor
 			if (!turn)
 			{
 				game.CreateCastle(x_ind, y_ind);
+				catle_issoe = true;
 				turn = true;
 				Redraw_field();
 
@@ -74,8 +78,11 @@ namespace OOAPdekor
 			x_ind = (int)Char.GetNumericValue(name[0]);
 			y_ind = (int)Char.GetNumericValue(name[2]);
 			turn = false;
-			knight.Visible = true;
-			knight.Enabled = true;
+			if (catle_issoe)
+			{
+				knight.Visible = true;
+				knight.Enabled = true;
+			}
 			castle.Visible = true;
 			castle.Enabled = true;
 		}
@@ -87,7 +94,19 @@ namespace OOAPdekor
 				game.CreateKnight(x_ind, y_ind);
 				turn = true;
 				Redraw_field();
-
+				rnd_x = rnd.Next(0, 8);
+				rnd_y = rnd.Next(0, 8);
+				if (!field.IsFull())
+				{
+					while (myfield[rnd_x,rnd_y]!=0)
+					{
+						rnd_x = rnd.Next(0, 8);
+						rnd_y = rnd.Next(0, 8);
+					}
+					game.CreateEnemy(rnd_x, rnd_y);
+					Redraw_field();
+				}
+				turn = true;
 			}
 		}
 
@@ -116,7 +135,9 @@ namespace OOAPdekor
 			start.Visible = false;
 			castle.Visible = true;
 			turn = true;
-			myfield = game.NewMap();
+			
+			field = game.NewMap();
+			myfield = field.get_field();
 
 		}
 	}
