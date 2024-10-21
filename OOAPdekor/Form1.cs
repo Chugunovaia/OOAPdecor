@@ -16,6 +16,8 @@ namespace OOAPdekor
 	{
 		Game game = new Game();
 		Battlefield field;
+		//Enemy evalue;
+		//Knight kvalue;
 		int[,] myfield;
 		int x_ind, y_ind;
 		string name;
@@ -33,6 +35,8 @@ namespace OOAPdekor
 					if (myfield[i, j] < 0)
 					{
 						map_btn[i, j].BackColor = Color.Red;
+						//map_btn[i, j].Text = 
+						
 						map_btn[i, j].Enabled = false;
 					}
 					else if (myfield[i, j] == 0)

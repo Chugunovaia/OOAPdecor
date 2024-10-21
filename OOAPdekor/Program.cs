@@ -50,10 +50,13 @@ namespace OOAPdekor
 
 	}
 
-	abstract class GameObj
+	abstract class GameObj /////!!!!!!!!!!
 	{
-
-		public abstract bool IsDead();
+		protected int AttackRange;
+		protected int Damage;
+		//public abstract bool IsDead();
+		public abstract void Attack();
+		
 	}
 	class Castle_singletone : GameObj
 	{
@@ -82,10 +85,15 @@ namespace OOAPdekor
 			return instance;
 
 		}
-		public override bool IsDead()
+		public  bool IsDead()
 		{
 			if (health > 0) return false;
 			else return true;
+		}
+		public override void Attack()
+		{
+			this.Damage = 1;
+			this.AttackRange = 1;
 		}
 	}
 	class Knight : GameObj
@@ -97,10 +105,20 @@ namespace OOAPdekor
 			y_ind = y;
 			health = hp;
 		}
-		public override bool IsDead()
+
+		public  bool IsDead()
 		{
 			if (health > 0) return false;
 			else return true;
+		}
+		public override void Attack()
+		{
+			this.Damage = 1;
+			this.AttackRange = 1;
+		}
+		public int get_hp()
+		{
+			return health;
 		}
 	}
 	class Enemy : GameObj
@@ -112,21 +130,74 @@ namespace OOAPdekor
 			y_ind = y;
 			health = hp;
 		}
-		public override bool IsDead()
+		public  bool IsDead()
 		{
 			if (health > 0) return false;
 			else return true;
 		}
+		public override void Attack()
+		{
+			this.Damage = 1;
+			this.AttackRange = 1;
+		}
+		public int get_hp()
+		{
+			return health;
+		}
+
 	}
+	abstract class Equipment_decorator:GameObj
+	{
+		public GameObj obj;
+		public Equipment_decorator(GameObj obj)
+		{
+			this.obj = obj;
+		}
+		//public override void Attack()
+		//{
+
+		//}
+	}
+	class Sword_decorator:Equipment_decorator
+	{
+		public Sword_decorator(GameObj obj) : base(obj) { }
+		public override void Attack()
+		{
+			this.obj.Attack();
+			this.SwordAttack();
+		}
+		private void SwordAttack()
+		{
+			this.Damage = 2;
+			
+		}
+	}
+	class Bow_decorator : Equipment_decorator
+	{
+		public Bow_decorator(GameObj obj) : base(obj) { }
+		public override void Attack()
+		{
+			this.obj.Attack();
+			this.BowAttack();
+		}
+		public void BowAttack()
+		{
+			
+			this.AttackRange = 2;
+		}
+	}
+
 	class Game
 	{
 		//- enemy, 0 clear, 1 castle, 2+ knights
+		Random rnd = new Random();
+		double rand;
 		public Castle_singletone castle;
 		public Battlefield field; int[,] myfield;
 		//public Knight[] knight=new Knight[64];
-		SortedDictionary<int, Knight> knight = new SortedDictionary<int, Knight>();
+		SortedDictionary<int, GameObj> knight = new SortedDictionary<int, GameObj>();
 		private int k = 2;
-		SortedDictionary<int, Enemy> enemy = new SortedDictionary<int, Enemy>();
+		SortedDictionary<int, GameObj> enemy = new SortedDictionary<int, GameObj>();
 		private int e = -1;
 		//GameObj obj;
 		public Battlefield NewMap() /////!!!!!!!!!!!!!!!!1
@@ -150,22 +221,51 @@ namespace OOAPdekor
 		public void CreateKnight(int x, int y)
 		{
 			int hp = 2;
+			rand = rnd.Next(0, 11);
+			rand=rand/10;
 			if (myfield[x, y] == 0)
 			{
-				knight.Add(k, new Knight(x, y, hp));
+				Knight cur = new Knight(x, y, hp);
+				if (rand <= 0.3)
+				{	
+					Sword_decorator sword_knight = new Sword_decorator(cur);
+					knight.Add(k, sword_knight);
+					
+				}else if(rand <=0.6)
+				{
+					Bow_decorator bow_knight = new Bow_decorator(cur);
+					knight.Add(k, bow_knight);
+					
+				}
 				myfield[x, y] = k;
 				k++;
 			}
 		}
 		public void CreateEnemy(int x, int y)
 		{
-			int hp = 2;
+			int hp = 3;
+			rand = rnd.Next(0, 11);
+			rand = rand / 10;
 			if (myfield[x, y] == 0)
 			{
-				enemy.Add(k, new Enemy(x, y, hp));
+				Enemy cur = new Enemy(x, y, hp);
+				if (rand <= 0.3)
+				{
+					Sword_decorator sword_enemy = new Sword_decorator(cur);
+					knight.Add(k, sword_enemy);
+
+				}
+				else if (rand <= 0.6)
+				{
+					Bow_decorator bow_enemy = new Bow_decorator(cur);
+					knight.Add(k, bow_enemy);
+
+				}
 				myfield[x, y] = e;
 				e--;
 			}
 		}
+
+		//public void 
 	}
 }
